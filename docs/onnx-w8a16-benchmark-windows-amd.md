@@ -101,12 +101,11 @@ and four-thread setting, but do not allocate KV cache or generate audio.
 | Slow + Fast sessions loaded | 260.40 MiB | 270.61 MiB |
 | Slow + Fast + codec decoder loaded | 513.09 MiB | 522.08 MiB |
 
-The last row is the closest local equivalent to the official model-card phrase
-“about 0.4 GiB after loading”. It is still higher than 0.4 GiB by about
-113 MiB for U8U8 and 138 MiB for W8A16. The official host, ORT version,
-allocator settings, and exact RSS boundary are not published, so this gap
-cannot be assigned to the quantization format alone. The staged result does
-show that the additional W8A16 load footprint is about 9 MiB on this host,
+The last row is the closest local equivalent to the official ONNX model-card
+phrase “about 0.6 GB after loading the online sessions”. The official host,
+ORT version, allocator settings, and exact RSS boundary are not published, so
+small differences cannot be assigned to the quantization format alone. The
+staged result does show that the additional W8A16 load footprint is about 9 MiB on this host,
 while the full-generation peak difference is dominated by runtime buffers and
 KV cache rather than the on-disk graph size.
 
@@ -117,10 +116,11 @@ The official `slow_ar_int8.onnx`, `fast_ar_int8.onnx`, and
 ONNX Runtime 1.29.0. With four ORT threads, RSS was 46.33 MiB at Python
 baseline, 225.74 MiB after loading Slow+Fast, and 633.95 MiB after loading the
 codec decoder. With eight threads the corresponding loaded values were 225.46
-MiB and 635.62 MiB. The AR-only value is below 0.4 GiB, while the complete
-three-session value is above it. This confirms that the official claim uses a
-different memory boundary, allocator, or loading state; changing U8S8 to
-W8A16 alone cannot reduce a complete process to 0.4 GiB.
+MiB and 635.62 MiB. The complete three-session value is about 0.62 GiB
+(0.634 GB), consistent with the official “about 0.6 GB” claim. The official
+page says the full repository is about 1.0 GB when the voice-registration
+encoder is included. The remaining difference is consistent with allocator
+and measurement-boundary variation, not a model-format defect.
 
 ### Single-step memory
 
