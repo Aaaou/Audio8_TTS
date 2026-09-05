@@ -87,6 +87,23 @@ official regression claim.
 The raw JSON is produced by
 `onnx_runtime_0_1b_int8/scripts/benchmark_single_step.py`.
 
+### Single-step memory
+
+The same single-step process also records peak RSS. This is not a per-kernel
+allocation measurement; it covers model loading, warm-up, prefill, and the
+measured Slow/Fast calls in one isolated process.
+
+| Single-step process peak RSS | U8U8 | W8A16 | Difference |
+| --- | ---: | ---: | ---: |
+| Peak RSS | 1357.0 MiB | 1370.3 MiB | +13.3 MiB (+0.98%) |
+
+The result is consistent with the expected behavior: W8A16 does not create a
+large additional memory footprint relative to U8U8. Both are in the same
+memory range; the small difference can include allocator and runtime noise.
+This does not validate the official model-card claim of approximately 0.6 GB,
+because that claim uses an unspecified memory definition and test host,
+whereas these values are full Python-process RSS on Windows.
+
 ## Interpretation
 
 Compared with U8U8, W8A16 is effectively tied on this CPU:

@@ -6,9 +6,11 @@ import json
 from pathlib import Path
 import statistics
 import sys
+import threading
 import time
 
 import numpy as np
+import psutil
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from arktts_runtime.runtime import ArkTtsRuntime
@@ -21,6 +23,27 @@ def stats(values: list[float]) -> dict[str, float | int]:
         "p95_ms": sorted(values)[min(len(values) - 1, round((len(values) - 1) * 0.95))] * 1000,
         "mean_ms": statistics.mean(values) * 1000,
     }
+
+
+class PeakRss:
+    def __init__(self) -> None:
+        self.process = psutil.Process()
+        self.peak = self.process.memory_info().rss
+        self.stop = threading.Event()
+        self.thread = threading.Thread(target=self._sample, daemon=True)
+
+    def _sample(self) -> None:
+        while not self.stop.wait(0.005):
+            self.peak = max(self.peak, self.process.memory_info().rss)
+
+    def __enter__(self) -> "PeakRss":
+        self.thread.start()
+        return self
+
+    def __exit__(self, *_: object) -> None:
+        self.stop.set()
+        self.thread.join()
+        self.peak = max(self.peak, self.process.memory_info().rss)
 
 
 def measure(args: argparse.Namespace) -> dict[str, object]:
@@ -107,7 +130,9 @@ def main() -> None:
     args = parser.parse_args()
     if args.threads < 1 or args.repeats < 1:
         parser.error("threads and repeats must be positive")
-    result = measure(args)
+    with PeakRss() as memory:
+        result = measure(args)
+    result["peak_rss_mib"] = memory.peak / 1024**2
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(result, ensure_ascii=False, indent=2))
