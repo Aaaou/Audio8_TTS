@@ -154,7 +154,9 @@ the incompatible 0.1B Falcon-H1 ONNX INT8 export. It includes an optional,
 mathematically equivalent U8U8 conversion for an observed U8S8/AVX2 corruption
 case, with the original INT8 graphs retained as a fallback. Platform status and
 the numerical investigation are documented in the
-[U8S8 AVX2 bug report](docs/onnx-int8-u8s8-avx2-bug-report.md).
+[U8S8 AVX2 bug report](docs/onnx-int8-u8s8-avx2-bug-report.md). See the
+[U8U8 workaround guide](docs/onnx-int8-u8u8-workaround.md) for installation,
+verification, and rollback commands.
 
 ## SGLang Omni Serving
 

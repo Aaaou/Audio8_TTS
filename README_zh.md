@@ -133,7 +133,8 @@ PyTorch 或 Transformers。
 独立的 [`onnx_runtime_0_1b_int8/`](onnx_runtime_0_1b_int8/) 用于不兼容上述运行时
 的 0.1B Falcon-H1 ONNX INT8 导出。它针对已观察到的 U8S8/AVX2 异常提供可选的
 数学等价 U8U8 转换，同时保留原始 INT8 图作为回退。平台验证状态和数值定位过程见
-[U8S8 AVX2 Bug 报告](docs/onnx-int8-u8s8-avx2-bug-report.zh-CN.md)。
+[U8S8 AVX2 Bug 报告](docs/onnx-int8-u8s8-avx2-bug-report.zh-CN.md)，完整安装、验证
+和回退命令见 [U8U8 修复操作指南](docs/onnx-int8-u8u8-workaround.zh-CN.md)。
 
 ## SGLang Omni 服务部署
 

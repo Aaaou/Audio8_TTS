@@ -134,6 +134,8 @@ kernel performance can vary by CPU. Keeping both graph variants adds about
 directory and are not committed to Git. See
 [`docs/onnx-int8-u8s8-avx2-bug-report.md`](../docs/onnx-int8-u8s8-avx2-bug-report.md)
 for evidence, limitations, and maintainer recommendations.
+For step-by-step installation, existing-environment repair, verification, and
+rollback, see the [U8U8 workaround guide](../docs/onnx-int8-u8u8-workaround.md).
 
 ## Local HTTP service
 

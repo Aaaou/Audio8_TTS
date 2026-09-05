@@ -91,6 +91,8 @@ U8U8 仍为 8 位，模型运行内存理论上接近原 INT8，但不同 CPU ke
 不同。同时保留两组 Slow/Fast 图会增加约 170MB 磁盘占用。生成文件位于已忽略的
 `model/`，不会提交到 Git。完整证据、限制和上游建议见
 [`docs/onnx-int8-u8s8-avx2-bug-report.zh-CN.md`](../docs/onnx-int8-u8s8-avx2-bug-report.zh-CN.md)。
+全新安装、已有环境修复、验证和回退步骤见
+[U8U8 修复操作指南](../docs/onnx-int8-u8u8-workaround.zh-CN.md)。
 
 Windows PowerShell 推理命令：
 
