@@ -15,7 +15,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Audio8 0.1B INT8 ONNX Runtime")
     parser.add_argument("--model-dir", type=Path, default=ROOT / "model")
     parser.add_argument("--voices-dir", type=Path, default=ROOT / "voices")
-    parser.add_argument("--precision", choices=["int8"], default=None)
+    parser.add_argument("--precision", choices=["int8", "u8u8"], default=None)
     parser.add_argument("--codec-precision", choices=["fp16"], default=None)
     parser.add_argument("--text", required=True)
     parser.add_argument("--voice", default="default")

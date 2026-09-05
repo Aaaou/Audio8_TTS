@@ -130,6 +130,11 @@ PyTorch 或 Transformers。
 [Audio8-TTS-Preview-0.6B-ONNX-INT4](https://huggingface.co/Audio8/Audio8-TTS-Preview-0.6B-ONNX-INT4)
 下载模型，并参阅 [ONNX Runtime 中文指南](onnx_runtime/README_zh.md)。
 
+独立的 [`onnx_runtime_0_1b_int8/`](onnx_runtime_0_1b_int8/) 用于不兼容上述运行时
+的 0.1B Falcon-H1 ONNX INT8 导出。它针对已观察到的 U8S8/AVX2 异常提供可选的
+数学等价 U8U8 转换，同时保留原始 INT8 图作为回退。平台验证状态和数值定位过程见
+[U8S8 AVX2 Bug 报告](docs/onnx-int8-u8s8-avx2-bug-report.zh-CN.md)。
+
 ## SGLang Omni 服务部署
 
 [`sglang_omni/`](sglang_omni/) 中的适配器提供兼容 OpenAI API 的推理服务，包含 SGLang

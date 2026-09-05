@@ -9,6 +9,8 @@ def test_local_ui_has_complete_tts_controls() -> None:
     assert 'id="generate"' in TEST_PAGE
     assert 'id="audio" controls' in TEST_PAGE
     assert 'id="download"' in TEST_PAGE
+    assert 'id="maxSeconds"' in TEST_PAGE
+    assert "max_new_tokens:maxAudioFrames()" in TEST_PAGE
     assert "fetch('/api/tts'" in TEST_PAGE
 
 

@@ -27,6 +27,14 @@ bash setup.sh
 python scripts/register_default_voice.py
 ```
 
+如果官方模型已经下载，`setup.sh` 还会生成数学等价的 U8U8 Slow/Fast AR 图并将
+其注册为默认精度。原始 U8S8 文件会保留，可用 `--precision int8` 显式回退。
+这用于规避在 AMD AVX2 CPU 上确认的异常噪声输出。也可以单独执行：
+
+```bash
+"$PWD/.venv/bin/python" scripts/convert_u8s8_to_u8u8.py --model-dir model
+```
+
 Windows 用户请使用 PowerShell 脚本，不需要运行 `setup.sh`：
 
 ```powershell
@@ -34,6 +42,13 @@ py -3 -m pip install -U huggingface_hub
 hf download Audio8/audio8-TTS-0.1B-ONNX-INT8 --local-dir model
 .\setup.ps1
 .\.venv\Scripts\python.exe scripts\register_default_voice.py
+```
+
+`setup.ps1` 会执行同样的可选 U8U8 转换。如果安装环境时模型还没下载，脚本会警告
+并跳过；下载模型后重新运行 setup，或执行：
+
+```powershell
+.\.venv\Scripts\python.exe scripts\convert_u8s8_to_u8u8.py --model-dir model
 ```
 
 如果 PowerShell 禁止执行本地脚本，可以运行：
@@ -54,6 +69,28 @@ bash run_infer.sh \
 
 同时会生成 `[10, frames]` 形状的 `outputs/test.npy`。模型或音色放在其他位置时，
 可设置 `ARKTTS_MODEL_DIR`、`ARKTTS_VOICES_DIR`。
+
+`max_new_tokens` 表示音频 codec 帧，不是输入字数。每帧为 44.1 kHz 下的 2048 个
+采样点，约 46.4ms；128 帧只有约 5.94 秒。网页改为显示 3–70 秒的最长语音，并
+按照中英文文本长度自动估算。接近官方建议上限的 150 个字，慢速中文可能需要约
+800–1100 帧。
+
+## 跨平台兼容性和精度选择
+
+转换成功后，下载目录的 manifest 会在 Windows、Linux 和 macOS 上统一默认使用
+`u8u8`，而不是根据操作系统名称猜测 CPU kernel。命令行可用 `--precision int8`，
+服务可用 `ARKTTS_PRECISION=int8` 随时回退官方原始图。
+
+| 平台 | 状态 | 说明 |
+| --- | --- | --- |
+| Windows x86-64，AMD Zen 3/AVX2 | 已验证 | 原始 U8S8 输出异常；U8U8 恢复可辨识语音。 |
+| Linux x86-64，Intel AVX-512 VNNI | 原始 U8S8 已验证 | U8U8 数学等价，但仍需更广泛的跨 CPU 性能测试。 |
+| macOS Apple Silicon/x86-64 | 预期兼容，未实测 | 转换和 Runtime 没有 OS 专用 kernel 代码，但当前没有 Mac 实机验证。 |
+
+U8U8 仍为 8 位，模型运行内存理论上接近原 INT8，但不同 CPU kernel 的速度可能
+不同。同时保留两组 Slow/Fast 图会增加约 170MB 磁盘占用。生成文件位于已忽略的
+`model/`，不会提交到 Git。完整证据、限制和上游建议见
+[`docs/onnx-int8-u8s8-avx2-bug-report.zh-CN.md`](../docs/onnx-int8-u8s8-avx2-bug-report.zh-CN.md)。
 
 Windows PowerShell 推理命令：
 

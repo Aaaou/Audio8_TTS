@@ -1,6 +1,7 @@
 # Python 3.10+ is supported by this standalone 0.1B runtime.
 numpy>=1.24,<3
 onnxruntime>=1.22,<1.24
+onnx>=1.16,<2
 tokenizers>=0.20,<0.23
 soundfile>=0.12,<1
 scipy>=1.10,<2

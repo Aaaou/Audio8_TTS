@@ -31,4 +31,10 @@ else
 fi
 "$VENV_PYTHON" -m pip install --upgrade pip
 "$VENV_PYTHON" -m pip install -r "$ROOT/requirements.txt"
+MODEL_DIR="${ARKTTS_MODEL_DIR:-$ROOT/model}"
+if [[ -f "$MODEL_DIR/slow_ar_int8.onnx" ]]; then
+  "$VENV_PYTHON" "$ROOT/scripts/convert_u8s8_to_u8u8.py" --model-dir "$MODEL_DIR"
+else
+  echo "Warning: official model files are not present yet; skipping the optional U8U8 compatibility conversion. Run setup.sh again after downloading the model." >&2
+fi
 echo "Environment ready: $VENV_PYTHON"

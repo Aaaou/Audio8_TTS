@@ -45,4 +45,13 @@ if ($LASTEXITCODE -ne 0) { throw "Failed to upgrade pip." }
 & $venvPython -m pip install -r (Join-Path $Root "requirements.txt")
 if ($LASTEXITCODE -ne 0) { throw "Failed to install runtime requirements." }
 
+$modelDir = if ([string]::IsNullOrWhiteSpace($env:ARKTTS_MODEL_DIR)) { Join-Path $Root "model" } else { $env:ARKTTS_MODEL_DIR }
+$slowModel = Join-Path $modelDir "slow_ar_int8.onnx"
+if (Test-Path -LiteralPath $slowModel -PathType Leaf) {
+    & $venvPython (Join-Path $Root "scripts\convert_u8s8_to_u8u8.py") --model-dir $modelDir
+    if ($LASTEXITCODE -ne 0) { throw "Failed to create the U8U8 compatibility graphs." }
+} else {
+    Write-Warning "Official model files are not present yet; skipping the optional U8U8 compatibility conversion. Run setup.ps1 again after downloading the model."
+}
+
 Write-Host "Environment ready: $venvPython"

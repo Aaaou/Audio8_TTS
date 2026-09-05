@@ -42,7 +42,7 @@ TEST_PAGE = """<!doctype html>
     textarea { min-height:156px; resize:vertical; padding:13px 14px; }
     select, input[type=number], input[type=text], input[type=file] { height:42px; padding:0 11px; }
     input[type=file] { padding:8px; }
-    .row { display:grid; grid-template-columns:1.35fr repeat(3, 1fr); gap:14px; margin-top:18px; }
+    .row { display:grid; grid-template-columns:1.35fr repeat(4, 1fr); gap:14px; margin-top:18px; }
     .actions { display:flex; align-items:center; gap:10px; margin-top:24px; }
     button, .download { height:42px; border-radius:6px; padding:0 17px; font:650 14px/40px inherit; cursor:pointer; text-decoration:none; }
     button { border:1px solid var(--accent); background:var(--accent); color:#fff; }
@@ -82,6 +82,7 @@ TEST_PAGE = """<!doctype html>
         <div><label for="temperature">Temperature</label><input id="temperature" type="number" value="0.7" min="0.05" max="2" step="0.05"></div>
         <div><label for="topP">Top P</label><input id="topP" type="number" value="0.9" min="0.05" max="1" step="0.05"></div>
         <div><label for="seed">Seed</label><input id="seed" type="number" value="42" min="0" step="1"></div>
+        <div><label for="maxSeconds">最长语音（秒）</label><input id="maxSeconds" type="number" value="12" min="3" max="70" step="1"></div>
       </div>
       <div class="actions"><button id="generate" disabled>生成语音</button><a id="download" class="download" download="audio8_0.1b_int8_output.wav">下载 WAV</a></div>
       <div id="status" class="status"></div>
@@ -105,6 +106,17 @@ TEST_PAGE = """<!doctype html>
     let audioUrl = null;
     let referenceUrl = null;
     let registrationAvailable = false;
+    let durationEdited = false;
+    function suggestedSeconds(text) {
+      const cjk = (text.match(/[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/g) || []).length;
+      const latinWords = (text.replace(/[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/g, ' ').match(/[A-Za-z0-9]+(?:[.'’-][A-Za-z0-9]+)*/g) || []).length;
+      const punctuation = (text.match(/[，。！？、；：,.!?;:]/g) || []).length;
+      return Math.min(70, Math.max(12, Math.ceil(cjk / 3.5 + latinWords / 2.5 + punctuation * 0.2 + 2)));
+    }
+    function maxAudioFrames() {
+      const seconds = Math.min(70, Math.max(3, Number($('maxSeconds').value) || 12));
+      return Math.min(1536, Math.ceil(seconds * 44100 / 2048));
+    }
     function selectView(name) {
       const register = name === 'register';
       $('ttsView').hidden = register;
@@ -184,7 +196,7 @@ TEST_PAGE = """<!doctype html>
       try {
         const response = await fetch('/api/tts', {
           method:'POST', headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({text, voice_name:$('voice').value, max_new_tokens:1024, temperature:Number($('temperature').value), top_p:Number($('topP').value), seed:Number($('seed').value)})
+          body:JSON.stringify({text, voice_name:$('voice').value, max_new_tokens:maxAudioFrames(), temperature:Number($('temperature').value), top_p:Number($('topP').value), seed:Number($('seed').value)})
         });
         if (!response.ok) throw new Error(await errorMessage(response));
         const blob = await response.blob();
@@ -200,6 +212,10 @@ TEST_PAGE = """<!doctype html>
         $('status').textContent = `生成失败：${error.message}`;
         $('status').classList.add('error');
       } finally { $('generate').disabled = false; }
+    });
+    $('maxSeconds').addEventListener('input', () => { durationEdited = true; });
+    $('text').addEventListener('input', () => {
+      if (!durationEdited) $('maxSeconds').value = suggestedSeconds($('text').value);
     });
     $('ttsTab').addEventListener('click', () => selectView('tts'));
     $('registerTab').addEventListener('click', () => selectView('register'));
