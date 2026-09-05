@@ -110,6 +110,18 @@ show that the additional W8A16 load footprint is about 9 MiB on this host,
 while the full-generation peak difference is dominated by runtime buffers and
 KV cache rather than the on-disk graph size.
 
+### Linux official-graph check
+
+The official `slow_ar_int8.onnx`, `fast_ar_int8.onnx`, and
+`codec_decoder_fp16.onnx` were also measured on Ubuntu 22.04 x86-64 with
+ONNX Runtime 1.29.0. With four ORT threads, RSS was 46.33 MiB at Python
+baseline, 225.74 MiB after loading Slow+Fast, and 633.95 MiB after loading the
+codec decoder. With eight threads the corresponding loaded values were 225.46
+MiB and 635.62 MiB. The AR-only value is below 0.4 GiB, while the complete
+three-session value is above it. This confirms that the official claim uses a
+different memory boundary, allocator, or loading state; changing U8S8 to
+W8A16 alone cannot reduce a complete process to 0.4 GiB.
+
 ### Single-step memory
 
 The same single-step process also records peak RSS. This is not a per-kernel
