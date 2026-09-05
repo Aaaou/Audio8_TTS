@@ -187,3 +187,7 @@ the ONNX-dependent check; the pure prompt and state-shape tests still run.
 The 0.1B model and this runtime are intended for local, authorized voice
 generation. Obtain consent before cloning a voice and disclose synthetic audio
 where appropriate.
+
+For reproducible end-to-end and official-card-style single-step benchmarks,
+see `../docs/onnx-w8a16-benchmark-windows-amd.md` and run
+`scripts/benchmark_backends.py` or `scripts/benchmark_single_step.py`.

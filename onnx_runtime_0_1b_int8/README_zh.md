@@ -142,3 +142,7 @@ Windows：
 ```
 
 请在获得授权后进行音色克隆，并在适当场景披露合成音频。
+
+端到端和对齐官方模型卡单步指标的可复现 benchmark 见
+`../docs/onnx-w8a16-benchmark-windows-amd.md`；对应程序是
+`scripts/benchmark_backends.py` 和 `scripts/benchmark_single_step.py`。

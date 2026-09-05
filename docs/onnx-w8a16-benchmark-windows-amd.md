@@ -55,6 +55,31 @@ the ONNX number is the Slow/Fast AR graph pair. Codec files are excluded from
 all disk figures because their formats differ and they are not changed by the
 W8A16 experiment.
 
+## Single-step comparison with the official model card
+
+The official model card reports approximately `19 ms` per Slow AR token,
+`8 ms` per Fast AR frame, and `19 ms` per prompt-prefill token on an unnamed
+8-thread test host. Our graph-step benchmark uses the same prompt and voice
+codes, one warm-up, five repetitions, and four threads on the Ryzen 5 5600.
+A Fast AR frame is all ten codebook graph calls, matching the runtime frame.
+
+| Single graph metric | Official card (8 threads) | U8U8 (4 threads) | W8A16 (4 threads) | U8U8 vs official | W8A16 vs official |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Prompt-prefill Slow step | 19.0 ms | 26.84 ms | 28.05 ms | +41.3% | +47.6% |
+| Generated Slow step | 19.0 ms | 29.40 ms | 30.12 ms | +54.7% | +58.5% |
+| Generated Fast frame (10 calls) | 8.0 ms | 20.27 ms | 20.25 ms | +153.4% | +153.2% |
+
+On the same machine W8A16 is about 2.5% slower for the generated Slow step,
+about 4.5% slower for prompt prefill, and effectively tied for the Fast frame.
+The larger gap versus the official card cannot be attributed to W8A16 alone:
+the official host is unspecified, uses eight threads, and the card does not
+state whether Python dispatch, cache copies, or other runtime overhead is
+included. These are local reproducibility measurements, not a hardware-normalized
+official regression claim.
+
+The raw JSON is produced by
+`onnx_runtime_0_1b_int8/scripts/benchmark_single_step.py`.
+
 ## Interpretation
 
 Compared with U8U8, W8A16 is effectively tied on this CPU:
