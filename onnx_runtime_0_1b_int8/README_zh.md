@@ -93,6 +93,9 @@ U8U8 仍为 8 位，模型运行内存理论上接近原 INT8，但不同 CPU ke
 [`docs/onnx-int8-u8s8-avx2-bug-report.zh-CN.md`](../docs/onnx-int8-u8s8-avx2-bug-report.zh-CN.md)。
 全新安装、已有环境修复、验证和回退步骤见
 [U8U8 修复操作指南](../docs/onnx-int8-u8u8-workaround.zh-CN.md)。
+另有一套独立实验方案：从原版 BF16 权重生成与 0.6B 相同路径的 weight-only
+`MatMulNBits(bits=8)` 图。具体命令和限制见
+[W8A16 实验指南](../docs/onnx-w8a16-experiment.zh-CN.md)；目前不会默认启用。
 
 Windows PowerShell 推理命令：
 

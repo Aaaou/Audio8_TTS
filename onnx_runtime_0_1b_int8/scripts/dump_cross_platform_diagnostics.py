@@ -38,7 +38,7 @@ def main() -> None:
     parser.add_argument("--text", required=True)
     parser.add_argument("--voice", default="default")
     parser.add_argument("--threads", type=int, default=1)
-    parser.add_argument("--precision", choices=["int8", "u8u8"], default=None)
+    parser.add_argument("--precision", choices=["int8", "u8u8", "w8a16"], default=None)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
 

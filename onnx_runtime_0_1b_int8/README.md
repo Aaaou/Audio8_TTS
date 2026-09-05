@@ -136,6 +136,9 @@ directory and are not committed to Git. See
 for evidence, limitations, and maintainer recommendations.
 For step-by-step installation, existing-environment repair, verification, and
 rollback, see the [U8U8 workaround guide](../docs/onnx-int8-u8u8-workaround.md).
+An independent experimental conversion rebuilds the original BF16 linear
+weights as 0.6B-style weight-only `MatMulNBits(bits=8)` operators. See the
+[W8A16 experiment guide](../docs/onnx-w8a16-experiment.md); it remains opt-in.
 
 ## Local HTTP service
 
