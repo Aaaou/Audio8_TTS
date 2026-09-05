@@ -108,3 +108,8 @@ py -3 onnx_runtime_0_1b_int8\scripts\dump_cross_platform_diagnostics.py `
 很小的 logits 差异逐步放大，因此后续 token 和波形不必完全一致。将 W8A16 设为
 默认方案前，还需要完成主观试听、长文本、Linux/macOS、实时系数、峰值内存和音质
 评估。
+
+首份可复现的 Windows/AMD 性能对比见
+[W8A16 benchmark 报告](onnx-w8a16-benchmark-windows-amd.md)。在该机器上，
+W8A16 与 U8U8 的性能差异约为 2%，同时明显快于原版 PyTorch FP32 CPU 路径，
+峰值进程内存也更低。

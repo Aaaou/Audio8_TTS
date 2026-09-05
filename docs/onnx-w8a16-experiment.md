@@ -114,3 +114,8 @@ identical to either BF16 or the U8U8 compatibility graph. Autoregressive token
 sequences and waveforms can diverge after small logit changes. Listening tests,
 longer prompts, Linux/macOS validation, real-time factor, peak memory, and
 quality evaluation are still required before making W8A16 the default.
+
+The first reproducible Windows/AMD performance comparison is documented in
+[the W8A16 benchmark report](onnx-w8a16-benchmark-windows-amd.md). On that
+system W8A16 is within about 2% of U8U8 performance and substantially faster
+and smaller in peak RSS than the original PyTorch FP32 CPU path.
