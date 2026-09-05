@@ -67,7 +67,14 @@ A Fast AR frame is all ten codebook graph calls, matching the runtime frame.
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Prompt-prefill Slow step | 19.0 ms | 26.84 ms | 28.05 ms | +41.3% | +47.6% |
 | Generated Slow step | 19.0 ms | 29.40 ms | 30.12 ms | +54.7% | +58.5% |
-| Generated Fast frame (10 calls) | 8.0 ms | 20.27 ms | 20.25 ms | +153.4% | +153.2% |
+| Generated Fast graph call (one codebook) | 8.0 ms* | 1.75 ms | 1.90 ms | -78.1% | -76.3% |
+| Generated Fast frame (10 calls) | 8.0 ms* | 20.27 ms | 20.25 ms | +153.4% | +153.2% |
+
+`*` The official README says “8 ms per fast-AR frame” but does not define
+whether “frame” means one graph call or all ten codebook calls. We therefore
+show both interpretations. If it means one graph call, both local ONNX builds
+are faster than the official number; if it means a complete ten-call audio
+frame, the local builds are slower. The benchmark JSON records both units.
 
 On the same machine W8A16 is about 2.5% slower for the generated Slow step,
 about 4.5% slower for prompt prefill, and effectively tied for the Fast frame.
