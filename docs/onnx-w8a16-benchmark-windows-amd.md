@@ -87,6 +87,29 @@ official regression claim.
 The raw JSON is produced by
 `onnx_runtime_0_1b_int8/scripts/benchmark_single_step.py`.
 
+### Staged load memory
+
+To separate the model-load figure from generation peak RSS, the companion
+script `onnx_runtime_0_1b_int8/scripts/benchmark_memory_stages.py` records RSS
+after each session is created. These measurements use the same Windows host
+and four-thread setting, but do not allocate KV cache or generate audio.
+
+| Stage | U8U8 | W8A16 |
+| --- | ---: | ---: |
+| Python baseline | 49.02 MiB | 48.89 MiB |
+| Slow session loaded | 227.42 MiB | 237.94 MiB |
+| Slow + Fast sessions loaded | 260.40 MiB | 270.61 MiB |
+| Slow + Fast + codec decoder loaded | 513.09 MiB | 522.08 MiB |
+
+The last row is the closest local equivalent to the official model-card phrase
+“about 0.4 GiB after loading”. It is still higher than 0.4 GiB by about
+113 MiB for U8U8 and 138 MiB for W8A16. The official host, ORT version,
+allocator settings, and exact RSS boundary are not published, so this gap
+cannot be assigned to the quantization format alone. The staged result does
+show that the additional W8A16 load footprint is about 9 MiB on this host,
+while the full-generation peak difference is dominated by runtime buffers and
+KV cache rather than the on-disk graph size.
+
 ### Single-step memory
 
 The same single-step process also records peak RSS. This is not a per-kernel
