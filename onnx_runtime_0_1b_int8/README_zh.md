@@ -145,4 +145,7 @@ Windows：
 
 端到端和对齐官方模型卡单步指标的可复现 benchmark 见
 `../docs/onnx-w8a16-benchmark-windows-amd.md`；对应程序是
-`scripts/benchmark_backends.py` 和 `scripts/benchmark_single_step.py`。
+`scripts/benchmark_backends.py`、`scripts/benchmark_single_step.py` 和
+`scripts/benchmark_memory_stages.py`。报告还记录了 Ubuntu 22.04 上的官方 U8S8
+加载测试：Slow AR、Fast AR 和 FP16 codec decoder 在 4 线程下为 633.95 MiB，
+8 线程下为 635.62 MiB。

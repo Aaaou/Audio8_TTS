@@ -190,4 +190,7 @@ where appropriate.
 
 For reproducible end-to-end and official-card-style single-step benchmarks,
 see `../docs/onnx-w8a16-benchmark-windows-amd.md` and run
-`scripts/benchmark_backends.py` or `scripts/benchmark_single_step.py`.
+`scripts/benchmark_backends.py`, `scripts/benchmark_single_step.py`, or
+`scripts/benchmark_memory_stages.py`. The report also records an Ubuntu 22.04
+official-U8S8 load check: 633.95 MiB RSS at four threads and 635.62 MiB at
+eight threads for Slow AR, Fast AR, and the FP16 codec decoder.

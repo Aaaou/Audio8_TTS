@@ -113,3 +113,8 @@ py -3 onnx_runtime_0_1b_int8\scripts\dump_cross_platform_diagnostics.py `
 [W8A16 benchmark 报告](onnx-w8a16-benchmark-windows-amd.md)。在该机器上，
 W8A16 与 U8U8 的性能差异约为 2%，同时明显快于原版 PyTorch FP32 CPU 路径，
 峰值进程内存也更低。
+
+另外在 Ubuntu 22.04 x86-64、ONNX Runtime 1.29.0 上加载官方 U8S8 Slow AR、
+Fast AR 和 FP16 codec decoder：4 线程 RSS 为 633.95 MiB，8 线程为
+635.62 MiB，与官方“约 0.6 GB”基本一致。该结果只复核官方图的加载内存，
+不代表 W8A16 已在 Linux 上完成音质或速度验证。

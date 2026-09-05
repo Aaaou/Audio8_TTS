@@ -119,3 +119,9 @@ The first reproducible Windows/AMD performance comparison is documented in
 [the W8A16 benchmark report](onnx-w8a16-benchmark-windows-amd.md). On that
 system W8A16 is within about 2% of U8U8 performance and substantially faster
 and smaller in peak RSS than the original PyTorch FP32 CPU path.
+
+For memory-claim verification, the official U8S8 graphs were also loaded on
+Ubuntu 22.04 x86-64 with ONNX Runtime 1.29.0. Slow AR, Fast AR, and the FP16
+codec decoder used 633.95 MiB RSS at four threads and 635.62 MiB at eight
+threads, consistent with the official “about 0.6 GB” figure. This is an
+official-graph memory check, not a Linux W8A16 quality or speed validation.
